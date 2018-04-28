@@ -1,0 +1,31 @@
+version: '3.1'
+
+services:
+  nginx:
+    image: yiliao/nginx-wordpress
+    restart: always
+    ports:
+      - 80:80
+    volumes:
+      - wproot:/var/www/html
+
+  wp-fpm:
+    tty: true
+    stdin_open: true
+    image: yiliao/wordpress-fpm
+    restart: always
+    volumes:
+      - wproot:/var/www/html
+    environment:
+      WORDPRESS_DB_HOST: yili-demo-mysql.mysql.database.azure.com
+      WORDPRESS_DB_USER: dbuser@yili-demo-mysql
+      WORDPRESS_DB_PASSWORD: myPassw0rd
+      WPFPM_WP_REDIS_HOST: redis
+      WPFPM_RT_WP_NGINX_HELPER_CACHE_PATH: "/tmp/cache"
+
+  redis:
+    image: redis:3-alpine
+    restart: always
+
+volumes:
+  wproot:
