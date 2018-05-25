@@ -1,4 +1,10 @@
 #!/bin/bash
+# start SSH service
+/etc/init.d/sshd restart
+
+# Get environment variables to show up in SSH session
+eval $(printenv | awk -F= '{print "export " $1"="$2 }' >> /etc/profile)
+
 set -euo pipefail
 
 # Remove exec from original entrypoint so we can continue here
@@ -55,11 +61,11 @@ fi
 
 # Install Redis Cache plugin
 if [ ! -e wp-content/plugins/redis-cache ]; then
-  if ( wget https://downloads.wordpress.org/plugin/redis-cache.1.3.5.zip ); then
-    unzip redis-cache.1.3.5.zip -q -d /var/www/html/wp-content/plugins/
-    rm redis-cache.1.3.5.zip
+  if ( wget https://downloads.wordpress.org/plugin/redis-cache.1.3.8.zip ); then
+    unzip redis-cache.1.3.8.zip -q -d /var/www/html/wp-content/plugins/
+    rm redis-cache.1.3.8.zip
   else
-    echo "## WARN: wget failed for https://downloads.wordpress.org/plugin/redis-cache.1.3.5.zip"
+    echo "## WARN: wget failed for https://downloads.wordpress.org/plugin/redis-cache.1.3.8.zip"
   fi
 fi
 

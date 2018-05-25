@@ -15,11 +15,22 @@ RUN docker-php-source extract \
   && docker-php-source delete \
   && curl -O https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar \
   && chmod +x wp-cli.phar \
-  && mv wp-cli.phar /usr/local/bin/wp
-
+  && mv wp-cli.phar /usr/local/bin/wp \
+  # ssh
+  && echo "root:Docker!" | chpasswd \
+  && apk update --no-cache \
+  && apk add openssh \
+  && apk add vim \
+  && apk add curl \
+  && apk add wget \ 
+  && apk add bash 
+  
+EXPOSE 2222
 ADD uploads.ini /usr/local/etc/php/conf.d/
 ADD my.bashrc /root/.bashrc
+
 COPY entrypoint.sh /usr/local/bin/
+COPY BaltimoreCyberTrustRoot.crt.pem /usr/src/
 
 ENTRYPOINT ["entrypoint.sh"]
 CMD ["php-fpm"]

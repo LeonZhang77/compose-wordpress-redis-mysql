@@ -7,7 +7,7 @@ services:
     ports:
       - 80:80
     volumes:
-      - wproot:/var/www/html
+      - ${WEBAPP_STORAGE_HOME}/site/wwwroot:/var/www/html
 
   wp-fpm:
     tty: true
@@ -15,17 +15,20 @@ services:
     image: yiliao/wordpress-fpm
     restart: always
     volumes:
-      - wproot:/var/www/html
+      - ${WEBAPP_STORAGE_HOME}/site/wwwroot:/var/www/html
     environment:
-      WORDPRESS_DB_HOST: yili-demo-mysql.mysql.database.azure.com
-      WORDPRESS_DB_USER: dbuser@yili-demo-mysql
-      WORDPRESS_DB_PASSWORD: myPassw0rd
+      # when deploy to Azure App Service, 
+      # move the enviroment varibles to Application settings 
+      # in App Service and put references here      
+      WORDPRESS_DB_HOST: ${WORDPRESS_DB_HOST}
+      WORDPRESS_DB_USER: ${WORDPRESS_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${WORDPRESS_DB_PASSWORD}
+      WORDPRESS_DB_NAME: ${WORDPRESS_DB_NAME}
+
+      # use local redis       
       WPFPM_WP_REDIS_HOST: redis
       WPFPM_RT_WP_NGINX_HELPER_CACHE_PATH: "/tmp/cache"
 
   redis:
     image: redis:3-alpine
     restart: always
-
-volumes:
-  wproot:
